@@ -36,6 +36,7 @@ jobs:
           key: ${{ secrets.EC2_SSH_KEY }}   # SSH 개인키 (Secrets)
           source: "ragcraft/build/libs/*.jar" # 빌드 결과 JAR 경로
           target: "/home/ubuntu/ragcraft"   # EC2의 배포 디렉터리
+          strip_components: 3
 
       # 5. EC2에서 환경변수 파일(.env) 갱신 + 서비스 재시작
       - name: Update env file and restart service
