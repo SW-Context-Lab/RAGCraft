@@ -54,9 +54,9 @@ jobs:
             cd /home/ubuntu/ragcraft
 
             # 기존 .env 파일을 새 값으로 덮어씀
-            echo "DB_URL=$DB_URL" > .env
-            echo "DB_USERNAME=$DB_USERNAME" >> .env
-            echo "DB_PASSWORD=$DB_PASSWORD" >> .env
+            echo "DB_URL=${{ secrets.DB_URL }}" > .env
+            echo "DB_USERNAME=${{ secrets.DB_USERNAME }}" >> .env
+            echo "DB_PASSWORD=${{ secrets.DB_PASSWORD }}" >> .env
 
             # JAR 파일명을 고정 이름으로 변경
             mv ragcraft-*.jar ragcraft.jar
