@@ -11,6 +11,6 @@ public class HealthController {
 
     @GetMapping
     public ResponseEntity<String> health() {
-        return ResponseEntity.ok("CD pipeline check");
+        return ResponseEntity.ok("CD pipeline check 2");
     }
 }
