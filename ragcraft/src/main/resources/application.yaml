@@ -13,3 +13,7 @@ spring:
     hibernate:
       ddl-auto: update
     show-sql: true
+
+app:
+  s3:
+    bucket: ragcraft-source-bucket

@@ -1,17 +1,14 @@
 package lab.context.ragcraft.domain.user;
 
 import jakarta.persistence.*;
+import lab.context.ragcraft.domain.source.Source;
 import lombok.Getter;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
-@Table(
-        name = "users",
-        uniqueConstraints = {
-                @UniqueConstraint(columnNames = "email")
-        }
-)
 @Getter
 public class User {
 
@@ -27,6 +24,9 @@ public class User {
 
     @Column(nullable = false)
     private LocalDateTime createdAt;
+
+    @OneToMany(mappedBy = "user")
+    private List<Source> sources = new ArrayList<>();
 
     protected User() {
     }
