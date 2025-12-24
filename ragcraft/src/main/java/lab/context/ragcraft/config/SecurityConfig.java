@@ -1,4 +1,4 @@
-package lab.context.ragcraft;
+package lab.context.ragcraft.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
