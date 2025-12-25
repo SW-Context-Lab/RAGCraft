@@ -18,7 +18,12 @@ public class SourceService {
     private final FileStorage fileStorage;
 
     @Transactional
-    public Source upload(Long userId, MultipartFile file) {
+    public Source upload(
+            Long userId,
+            String displayName,
+            String description,
+            MultipartFile file
+    ) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new IllegalStateException("USER_NOT_FOUND"));
 
@@ -26,6 +31,8 @@ public class SourceService {
 
         Source source = new Source(
                 user,
+                displayName,
+                description,
                 file.getOriginalFilename(),
                 file.getContentType(),
                 file.getSize(),

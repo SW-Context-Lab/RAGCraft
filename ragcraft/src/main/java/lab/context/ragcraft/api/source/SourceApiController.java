@@ -24,14 +24,17 @@ public class SourceApiController {
      * Content-Type: multipart/form-data
      *
      * form-data:
-     * - file: 업로드할 파일
+     * - file: 업로드할 파일 (필수)
+     * - displayName: 사용자 정의 소스 이름 (필수)
+     * - description: 소스 설명 (선택)
      */
     @PostMapping(consumes = "multipart/form-data")
     public ResponseEntity<?> upload(
             @RequestParam("file") MultipartFile file,
+            @RequestParam("displayName") String displayName,
+            @RequestParam(value = "description", required = false) String description,
             HttpSession session
     ) {
-
         // 1. 로그인 여부 확인
         Long userId = (Long) session.getAttribute(LOGIN_USER_ID);
         if (userId == null) {
@@ -43,10 +46,20 @@ public class SourceApiController {
             return ResponseEntity.badRequest().body("FILE_REQUIRED");
         }
 
-        // 3. 업로드 처리
-        Source source = sourceService.upload(userId, file);
+        // 3. displayName 유효성 체크
+        if (displayName == null || displayName.isBlank()) {
+            return ResponseEntity.badRequest().body("DISPLAY_NAME_REQUIRED");
+        }
 
-        // 4. 최소 응답 (ID만 반환)
+        // 4. 업로드 처리
+        Source source = sourceService.upload(
+                userId,
+                displayName,
+                description,
+                file
+        );
+
+        // 5. 최소 응답
         return ResponseEntity
                 .status(201)
                 .body(new SourceUploadResponse(source.getId()));
