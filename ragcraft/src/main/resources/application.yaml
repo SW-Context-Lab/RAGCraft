@@ -17,3 +17,7 @@ spring:
 app:
   s3:
     bucket: ragcraft-source-bucket
+
+elasticsearch:
+  host: ${ES_HOST}
+  apiKey: ${ES_API_KEY}
