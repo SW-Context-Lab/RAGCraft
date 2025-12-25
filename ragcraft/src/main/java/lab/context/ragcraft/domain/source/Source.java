@@ -17,6 +17,15 @@ public class Source {
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
+
+    // 사용자 정의 이름
+    @Column(nullable = false, length = 255)
+    private String displayName;
+
+    // 사용자 설명
+    @Column(length = 1000)
+    private String description;
+
     @Column(nullable = false)
     private String originalFilename;
 
@@ -37,8 +46,10 @@ public class Source {
 
     protected Source() {}
 
-    public Source(User user, String originalFilename, String contentType, long size, String s3Key, String s3Url) {
+    public Source(User user,String displayName, String description, String originalFilename, String contentType, long size, String s3Key, String s3Url) {
         this.user = user;
+        this.displayName = displayName;
+        this.description = description;
         this.originalFilename = originalFilename;
         this.contentType = contentType;
         this.size = size;
