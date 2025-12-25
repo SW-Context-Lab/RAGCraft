@@ -8,6 +8,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.List;
+
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/sources")
@@ -63,5 +65,45 @@ public class SourceApiController {
         return ResponseEntity
                 .status(201)
                 .body(new SourceUploadResponse(source.getId()));
+    }
+
+
+
+    /**
+     * 소스 목록 조회 API (메타데이터)
+     *
+     * @param session
+     * @return
+     */
+    @GetMapping
+    public ResponseEntity<List<SourceListResponse>> getSources(HttpSession session) {
+
+        Long userId = (Long) session.getAttribute(LOGIN_USER_ID);
+        if (userId == null) {
+            return ResponseEntity.status(401).build();
+        }
+
+        List<SourceListResponse> sources = sourceService.getSources(userId);
+        return ResponseEntity.ok(sources);
+    }
+
+    /**
+     *
+     * @param sourceId
+     * @param session
+     * @return
+     */
+    @GetMapping("/{sourceId}")
+    public ResponseEntity<SourceDetailResponse> getSource(
+            @PathVariable Long sourceId,
+            HttpSession session
+    ) {
+        Long userId = (Long) session.getAttribute(LOGIN_USER_ID);
+        if (userId == null) {
+            return ResponseEntity.status(401).build();
+        }
+
+        SourceDetailResponse response = sourceService.getSource(userId, sourceId);
+        return ResponseEntity.ok(response);
     }
 }
