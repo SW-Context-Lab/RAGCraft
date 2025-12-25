@@ -45,6 +45,8 @@ jobs:
           DB_URL: ${{ secrets.DB_URL }}           # DB 주소
           DB_USERNAME: ${{ secrets.DB_USERNAME }} # DB 계정
           DB_PASSWORD: ${{ secrets.DB_PASSWORD }} # DB 비밀번호
+          ES_HOST: ${{ secrets.ES_HOST }} # ES 주소
+          ES_API_KEY: ${{ secrets.ES_API_KEY }} # ES API 키
         with:
           host: ${{ vars.EC2_HOST }}
           username: ${{ vars.EC2_USER }}
@@ -57,6 +59,8 @@ jobs:
             echo "DB_URL=${{ secrets.DB_URL }}" > .env
             echo "DB_USERNAME=${{ secrets.DB_USERNAME }}" >> .env
             echo "DB_PASSWORD=${{ secrets.DB_PASSWORD }}" >> .env
+            echo "ES_HOST=${{ secrets.ES_HOST }}" >> .env
+            echo "ES_API_KEY=${{ secrets.ES_API_KEY }}" >> .env
 
             # JAR 파일명을 고정 이름으로 변경
             mv ragcraft-*.jar ragcraft.jar
