@@ -1,6 +1,7 @@
 package lab.context.ragcraft.domain.user;
 
 import jakarta.persistence.*;
+import lab.context.ragcraft.domain.custommodel.CustomModel;
 import lab.context.ragcraft.domain.source.Source;
 import lombok.Getter;
 
@@ -27,6 +28,9 @@ public class User {
 
     @OneToMany(mappedBy = "user")
     private List<Source> sources = new ArrayList<>();
+
+    @OneToMany(mappedBy = "user")
+    private List<CustomModel> customModels = new ArrayList<>();
 
     protected User() {
     }
