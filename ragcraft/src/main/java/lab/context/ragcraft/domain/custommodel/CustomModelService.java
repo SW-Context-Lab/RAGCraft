@@ -8,6 +8,7 @@ import lab.context.ragcraft.domain.source.SourceRepository;
 import lab.context.ragcraft.domain.user.User;
 import lab.context.ragcraft.domain.user.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.ai.embedding.EmbeddingModel;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -20,6 +21,7 @@ public class CustomModelService {
     private final CustomModelRepository customModelRepository;
     private final SourceRepository sourceRepository;
     private final UserRepository userRepository;
+    private final EmbeddingModel embeddingModel; // Spring AI가 주입해줌, 내가 application.yaml에  넣은 정보로
 
     @Transactional
     public CustomModel save(
@@ -111,8 +113,20 @@ public class CustomModelService {
 
         Long sourceId = model.getSource().getId();
 
-        // 현재는 실제 질의 처리 안 함
-        // 나중에 여기서 vector DB + LLM 호출로 교체 예정
+
+        // 질문 임베딩
+        // yml에 설정한 gemini-embedding-001 모델을 사용해 질문을 벡터로 변환함
+        float[] embed = embeddingModel.embed(question);
+
+        System.out.println("embed.length = " + embed.length);
+        for (float v : embed) {
+            System.out.print(v + " ");
+        }
+
+        // vector DB에서 검색 ElasticSearch, 인덱스는 userId, sourceId
+
+
+        // LLM 호출
 
         return "[TEMP ANSWER] sourceId=" + sourceId + ", question=" + question;
     }
