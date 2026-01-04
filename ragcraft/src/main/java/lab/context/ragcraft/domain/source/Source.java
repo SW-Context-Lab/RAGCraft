@@ -35,10 +35,10 @@ public class Source {
     @Column(nullable = false)
     private long size;
 
-    @Column(nullable = false, length = 1024)
+    @Column(name = "s3_key", nullable = false, length = 1024)
     private String s3Key;
 
-    @Column(nullable = false, length = 2048)
+    @Column(name = "s3_url", nullable = false, length = 2048)
     private String s3Url;
 
     @Column(nullable = false)
