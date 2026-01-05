@@ -19,8 +19,10 @@ spring:
         embedding:
           project-id: "rag-craft"
           location: "us-central1"
-          model: "gemini-embedding-001"
-
+          text:
+            options:
+              model: gemini-embedding-001
+              dimensions: 3072
 app:
   s3:
     bucket: ragcraft-source-bucket
