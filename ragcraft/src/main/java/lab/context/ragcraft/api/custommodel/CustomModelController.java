@@ -7,6 +7,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
 import java.util.List;
 
 @RestController
@@ -146,7 +147,7 @@ public class CustomModelController {
             @PathVariable Long customModelId,
             @RequestBody String question,
             HttpSession session
-    ) {
+    ) throws IOException {
         Long userId = (Long) session.getAttribute(LOGIN_USER_ID);
         if (userId == null) {
             return ResponseEntity.status(401).build();
