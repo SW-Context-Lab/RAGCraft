@@ -23,6 +23,12 @@ spring:
             options:
               model: gemini-embedding-001
               dimensions: 3072
+        gemini:
+          project-id: rag-craft
+          location: us-central1
+          chat:
+            options:
+              model: gemini-2.0-flash   # 예시 (원하면 pro로 변경)
 app:
   s3:
     bucket: ragcraft-source-bucket
