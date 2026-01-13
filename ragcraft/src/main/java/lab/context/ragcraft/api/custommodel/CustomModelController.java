@@ -165,4 +165,17 @@ public class CustomModelController {
 
         return ResponseEntity.ok(answer);
     }
+
+    @DeleteMapping("/{customModelId}")
+    public ResponseEntity<Void> deleteCustomModel(
+            @PathVariable Long customModelId,
+            HttpSession session
+    ){
+        Long userId = (Long) session.getAttribute(LOGIN_USER_ID);
+        if (userId == null) {
+            return ResponseEntity.status(401).build();
+        }
+        customModelService.deleteCustomModel(userId, customModelId);
+        return ResponseEntity.noContent().build();
+    }
 }
