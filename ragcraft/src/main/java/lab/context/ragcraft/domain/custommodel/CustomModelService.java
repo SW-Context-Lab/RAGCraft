@@ -227,4 +227,20 @@ public class CustomModelService {
 
         return answer;
     }
+
+    @Transactional
+    public void deleteCustomModel(
+            Long userId,
+            Long customModelId
+    ){
+        if (!userRepository.existsById(userId)) {
+            throw new IllegalStateException("USER_NOT_FOUND");
+        }
+
+        CustomModel model = customModelRepository
+                .findByIdAndUserId(customModelId, userId)
+                .orElseThrow(() -> new IllegalStateException("CUSTOM_MODEL_NOT_FOUND"));
+
+        customModelRepository.delete(model);
+    }
 }

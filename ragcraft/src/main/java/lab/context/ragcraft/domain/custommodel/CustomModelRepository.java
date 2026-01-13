@@ -8,4 +8,5 @@ import java.util.Optional;
 public interface CustomModelRepository extends JpaRepository<CustomModel, Long> {
     List<CustomModel> findByUserIdOrderByCreatedAtDesc(Long userId);
     Optional<CustomModel> findByIdAndUserId(Long id, Long userId);
+    void deleteBySourceId(Long sourceId);
 }
