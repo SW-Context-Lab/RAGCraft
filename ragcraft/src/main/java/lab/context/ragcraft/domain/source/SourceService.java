@@ -1,7 +1,10 @@
 package lab.context.ragcraft.domain.source;
 
+import co.elastic.clients.elasticsearch.ElasticsearchClient;
+import co.elastic.clients.transport.endpoints.BooleanResponse;
 import lab.context.ragcraft.api.source.SourceDetailResponse;
 import lab.context.ragcraft.api.source.SourceListResponse;
+import lab.context.ragcraft.domain.custommodel.CustomModelRepository;
 import lab.context.ragcraft.domain.user.User;
 import lab.context.ragcraft.domain.user.UserRepository;
 import lab.context.ragcraft.storage.FileStorage;
@@ -12,6 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
@@ -21,7 +25,9 @@ public class SourceService {
 
     private final SourceRepository sourceRepository;
     private final UserRepository userRepository;
+    private final CustomModelRepository customModelRepository;
     private final FileStorage fileStorage;
+    private final ElasticsearchClient elasticsearchClient;
 
     @Transactional
     public Source upload(
@@ -104,5 +110,27 @@ public class SourceService {
                 source.getContentType(),
                 downloadUrl
         );
+    }
+
+    @Transactional
+    public void deleteSource(Long userId, Long sourceId) throws IOException {
+        Source source = sourceRepository.findByIdAndUserId(sourceId, userId)
+                .orElseThrow(() -> new IllegalStateException("SOURCE_NOT_FOUND"));
+
+        // 엘라스틱 인덱스 삭제
+        String indexName = "rag-" + userId + "-" + sourceId;
+        deleteElasticsearchIndex(indexName);
+
+        // 해당 소스를 사용하고 있는 모델이 있으면 삭제
+        customModelRepository.deleteBySourceId(sourceId);
+        sourceRepository.delete(source);
+    }
+
+    public void deleteElasticsearchIndex(String indexName) throws IOException {
+        // 인덱스가 존재하는지 확인
+        BooleanResponse exists = elasticsearchClient.indices().exists(e -> e.index(indexName));
+        if (exists.value()) {
+            elasticsearchClient.indices().delete(d -> d.index(indexName));
+        }
     }
 }

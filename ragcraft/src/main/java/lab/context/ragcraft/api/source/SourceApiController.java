@@ -8,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
 
 @RestController
@@ -105,5 +106,22 @@ public class SourceApiController {
 
         SourceDetailResponse response = sourceService.getSource(userId, sourceId);
         return ResponseEntity.ok(response);
+    }
+
+    /**
+     *  소스 삭제 API
+     * */
+    @DeleteMapping("/{sourceId}")
+    public ResponseEntity<Void> deleteSource(
+            @PathVariable Long sourceId,
+            HttpSession session
+    ) throws IOException {
+        Long userId = (Long) session.getAttribute(LOGIN_USER_ID);
+        if (userId == null) {
+            return ResponseEntity.status(401).build();
+        }
+
+        sourceService.deleteSource(userId, sourceId);
+        return ResponseEntity.noContent().build();
     }
 }
