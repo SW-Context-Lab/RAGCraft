@@ -3,6 +3,7 @@ package lab.context.ragcraft.api.custommodel;
 import jakarta.servlet.http.HttpSession;
 import lab.context.ragcraft.domain.custommodel.CustomModel;
 import lab.context.ragcraft.domain.custommodel.CustomModelService;
+import lab.context.ragcraft.domain.custommodel.chat.CustomModelChatService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -18,6 +19,7 @@ public class CustomModelController {
     private static final String LOGIN_USER_ID = "LOGIN_USER_ID";
 
     private final CustomModelService customModelService;
+    private final CustomModelChatService customModelChatService;
 
     /**
      * 커스텀 모델 생성 API
@@ -165,6 +167,22 @@ public class CustomModelController {
 
         return ResponseEntity.ok(answer);
     }
+
+    @GetMapping("/{customModelId}/chats")
+    public ResponseEntity<?> getChatHistory(
+            @PathVariable Long customModelId,
+            HttpSession session
+    ) {
+        Long userId = (Long) session.getAttribute(LOGIN_USER_ID);
+        if (userId == null) {
+            return ResponseEntity.status(401).build();
+        }
+
+        return ResponseEntity.ok(
+                customModelChatService.getChats(userId, customModelId)
+        );
+    }
+
 
     @DeleteMapping("/{customModelId}")
     public ResponseEntity<Void> deleteCustomModel(

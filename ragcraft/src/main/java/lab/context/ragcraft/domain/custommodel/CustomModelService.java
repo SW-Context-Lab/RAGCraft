@@ -5,16 +5,15 @@ import co.elastic.clients.elasticsearch.ElasticsearchClient;
 import co.elastic.clients.elasticsearch.core.SearchRequest;
 import lab.context.ragcraft.api.custommodel.CustomModelDetailResponse;
 import lab.context.ragcraft.api.custommodel.CustomModelListResponse;
+import lab.context.ragcraft.domain.custommodel.chat.CustomModelChatService;
 import lab.context.ragcraft.domain.source.Source;
 import lab.context.ragcraft.domain.source.SourceRepository;
 import lab.context.ragcraft.domain.user.User;
 import lab.context.ragcraft.domain.user.UserRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.ai.chat.messages.AssistantMessage;
 import org.springframework.ai.chat.messages.SystemMessage;
 import org.springframework.ai.chat.messages.UserMessage;
 import org.springframework.ai.chat.model.ChatModel;
-import org.springframework.ai.chat.model.Generation;
 import org.springframework.ai.chat.prompt.Prompt;
 import org.springframework.ai.embedding.EmbeddingModel;
 import org.springframework.stereotype.Service;
@@ -34,6 +33,7 @@ public class CustomModelService {
     private final EmbeddingModel embeddingModel; // Spring AI가 주입해줌, 내가 application.yaml에  넣은 정보로
     private final ElasticsearchClient elasticsearchClient;
     private final ChatModel chatModel;
+    private final CustomModelChatService customModelChatService;
 
     @Transactional
     public CustomModel save(
@@ -188,8 +188,7 @@ public class CustomModelService {
 
 
 
-        // LLM 호출
-        // ================================
+        // LLM 호출 부
 
         // contexts를 하나의 문자열로 합침
         String contextText = String.join("\n\n---\n\n", contexts);
@@ -224,6 +223,11 @@ public class CustomModelService {
                 .getOutput()
                 .getText();
         System.out.println("answer = " + answer);
+
+
+        // 대화 내용 저장
+        User user = model.getUser();
+        customModelChatService.saveChatHistory(user, model, question, answer);
 
         return answer;
     }
