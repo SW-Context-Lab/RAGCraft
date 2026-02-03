@@ -38,7 +38,7 @@ public class CustomModelChat {
 
     // 질문 or 답변 내용
     @Lob
-    @Column(nullable = false)
+    @Column(nullable = false, columnDefinition = "LONGTEXT")
     private String content;
 
     @Column(nullable = false)
