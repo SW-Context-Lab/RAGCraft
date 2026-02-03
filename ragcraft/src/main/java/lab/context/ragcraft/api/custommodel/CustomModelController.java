@@ -5,8 +5,10 @@ import lab.context.ragcraft.domain.custommodel.CustomModel;
 import lab.context.ragcraft.domain.custommodel.CustomModelService;
 import lab.context.ragcraft.domain.custommodel.chat.CustomModelChatService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import reactor.core.publisher.Flux;
 
 import java.io.IOException;
 import java.util.List;
@@ -167,6 +169,29 @@ public class CustomModelController {
 
         return ResponseEntity.ok(answer);
     }
+
+    @GetMapping(
+            value = "/{customModelId}/query/stream",
+            produces = MediaType.TEXT_EVENT_STREAM_VALUE
+    )
+    public Flux<String> streamQuery(
+            @PathVariable Long customModelId,
+            @RequestParam String question,
+            HttpSession session
+    ) throws IOException {
+
+        Long userId = (Long) session.getAttribute(LOGIN_USER_ID);
+        if (userId == null) {
+            return Flux.error(new IllegalStateException("UNAUTHORIZED"));
+        }
+
+        return customModelService.streamQuery(
+                userId,
+                customModelId,
+                question
+        );
+    }
+
 
     @GetMapping("/{customModelId}/chats")
     public ResponseEntity<?> getChatHistory(
